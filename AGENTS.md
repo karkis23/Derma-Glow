@@ -1,5 +1,11 @@
-<!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
+# DermaGlow Agent Context
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-<!-- END:nextjs-agent-rules -->
+Welcome carefully. If you are an autonomous AI Agent waking up in this repository, know that you are stepping into a complex, premium Next.js Healthcare platform. 
+
+The application architecture heavily revolves around Role-Based Access Controls via Supabase RLS and Server Components.
+
+### Required Reading
+Please actively review the files within `.agent/` before beginning substantial framework restructuring.
+1. Read `.agent/project.md` to understand Data Schemas and Role logic.
+2. Read `.agent/rules.md` to guarantee your CSS matches the exact aesthetic parameters we've curated.
+3. Read `.agent/workflows/setup.md` for environmental setup behaviors.
