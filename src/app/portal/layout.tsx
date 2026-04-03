@@ -82,7 +82,7 @@ export default async function PortalLayout({
       {/* Main Content Area */}
       <main className="flex-1 p-6 lg:p-12 relative z-10">
          {/* Background soft gradients */}
-         <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-rose-gold-light/10 rounded-full blur-3xl opacity-60"></div>
+         <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-rose-gold-light/10 rounded-full blur-3xl opacity-60 pointer-events-none -z-10"></div>
          {children}
       </main>
     </div>
