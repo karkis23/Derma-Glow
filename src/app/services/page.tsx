@@ -76,7 +76,7 @@ export default async function ServicesPage() {
                       
                       <div className="flex items-center justify-between mt-auto pt-4 border-t border-charcoal/10">
                         <span className="font-bold text-lg text-charcoal">
-                          From ${service.price}
+                          From ₹{service.price}
                         </span>
                         <Link 
                           href={`/services/${service.slug}`}

@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Clock, DollarSign, CheckCircle2 } from 'lucide-react'
+import { ArrowLeft, Clock, IndianRupee, CheckCircle2 } from 'lucide-react'
 
 // Next.js 15 requires params to be awaited before usage in Server Components
 export default async function ServiceDetailsPage({
@@ -55,7 +55,7 @@ export default async function ServiceDetailsPage({
                  <Clock size={16} className="text-teal" /> {service.duration_minutes} Minutes
                </div>
                <div className="bg-white/90 backdrop-blur text-charcoal px-4 py-2 rounded-full font-bold flex items-center gap-2 shadow-lg">
-                 <DollarSign size={16} className="text-teal" /> From ${service.price}
+                 <IndianRupee size={16} className="text-teal" /> From ₹{service.price}
                </div>
              </div>
           </div>

@@ -41,3 +41,8 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 }
+
+/* Aggressively hide Next.js error overlays caused by Chrome extension injections */
+nextjs-portal {
+  display: none !important;
+}

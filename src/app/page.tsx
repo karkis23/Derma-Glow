@@ -133,7 +133,7 @@ export default function Home() {
                   Reveal brighter, smoother skin with our medical-grade chemical peels customized to your specific skin type and concerns.
                 </p>
                 <div className="flex justify-between items-center">
-                  <span className="font-medium text-lg">From $150</span>
+                  <span className="font-medium text-lg">From ₹150</span>
                   <Link href="/services/chemical-peel" className="text-rose-gold hover:text-rose-gold-light font-medium flex items-center gap-1">
                     Details <ArrowRight size={16} />
                   </Link>
@@ -159,7 +159,7 @@ export default function Home() {
                   Stimulate your body's natural collagen production to firm skin, reduce scars, and minimize pores with precision technology.
                 </p>
                 <div className="flex justify-between items-center">
-                  <span className="font-medium text-lg">From $250</span>
+                  <span className="font-medium text-lg">From ₹250</span>
                   <Link href="/services/microneedling" className="text-rose-gold hover:text-rose-gold-light font-medium flex items-center gap-1">
                     Details <ArrowRight size={16} />
                   </Link>
@@ -185,7 +185,7 @@ export default function Home() {
                   Smooth wrinkles and restore youthful volume with precision injections administered by our board-certified expert injectors.
                 </p>
                 <div className="flex justify-between items-center">
-                  <span className="font-medium text-lg">From $300</span>
+                  <span className="font-medium text-lg">From ₹300</span>
                   <Link href="/services/botox-fillers" className="text-rose-gold hover:text-rose-gold-light font-medium flex items-center gap-1">
                     Details <ArrowRight size={16} />
                   </Link>

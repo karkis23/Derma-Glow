@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
@@ -40,9 +42,14 @@ export default async function AdminLayout({
             </Link>
             
             {role === 'admin' && (
+              <>
               <Link href="/admin/assets" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
                 <ImagePlus size={18} /> Asset Manager
               </Link>
+              <Link href="/admin/staff" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
+                <Users size={18} /> Staff Management
+              </Link>
+              </>
             )}
             
             {(role === 'admin' || role === 'doctor') && (

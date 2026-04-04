@@ -45,7 +45,8 @@ export default async function AdminDashboardPage() {
                   <th className="pb-3 px-4 font-medium">Date & Time</th>
                   <th className="pb-3 px-4 font-medium">Service</th>
                   <th className="pb-3 px-4 font-medium">Type</th>
-                  <th className="pb-3 px-4 font-medium">Action</th>
+                   <th className="pb-3 px-4 font-medium text-xs uppercase tracking-wider">Requested On</th>
+                  <th className="pb-3 px-4 font-medium text-xs uppercase tracking-wider text-right">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -54,56 +55,64 @@ export default async function AdminDashboardPage() {
                 )}
                 {appointments?.map(apt => (
                   <tr key={apt.id} className="border-b last:border-0 hover:bg-gray-50">
-                    <td className="py-4 px-4">
-                      <p className="font-medium text-charcoal">{apt.patient?.full_name}</p>
-                      <p className="text-xs text-gray-500">{apt.patient?.phone || 'No phone'}</p>
+                    <td className="py-4 px-4 font-medium text-charcoal">
+                      <p>{apt.patient?.full_name}</p>
+                      <p className="text-xs text-gray-400">{apt.patient?.phone || 'No phone'}</p>
                     </td>
                     <td className="py-4 px-4">
-                      <p className="text-charcoal">{format(new Date(apt.appointment_date), 'MMM dd, yyyy')}</p>
-                      <p className="text-sm text-gray-500">{apt.appointment_time.slice(0, 5)}</p>
+                      <p className="font-semibold text-charcoal">{format(new Date(apt.appointment_date), 'MMM dd, yyyy')}</p>
+                      <p className="text-xs text-gray-500 uppercase">{apt.appointment_time.slice(0, 5)}</p>
                     </td>
-                    <td className="py-4 px-4 text-sm text-gray-600">
+                    <td className="py-4 px-4 text-xs font-medium text-gray-600 uppercase tracking-wide">
                       {apt.services?.name}
                     </td>
                     <td className="py-4 px-4">
-                      <span className={`px-2 py-1 text-xs rounded-full font-medium ${
+                      <span className={`px-2 py-1 text-[10px] rounded-full font-bold uppercase ${
                         apt.type === 'teleconsultation' ? 'bg-purple-100 text-purple-700' : 'bg-teal/10 text-teal'
                       }`}>
-                        {apt.type === 'teleconsultation' ? 'Video' : 'In-Clinic'}
+                        {apt.type === 'teleconsultation' ? 'Video' : 'Clinic'}
                       </span>
                       {apt.status === 'confirmed' && (
-                        <span className="ml-2 px-2 py-1 text-xs rounded-full bg-green-100 text-green-700 font-medium">Confirmed</span>
+                        <div className="mt-1 flex items-center gap-1 text-[10px] font-bold text-green-600 uppercase">
+                           <div className="w-1 h-1 rounded-full bg-green-500 animate-pulse"></div> Confirmed
+                        </div>
                       )}
                     </td>
-                    <td className="py-4 px-4 flex gap-2">
-                       {apt.status === 'pending' && (
-                         <form action={async () => {
-                           'use server'
-                           await updateAppointmentStatus(apt.id, 'confirmed')
-                         }}>
-                           <button className="bg-teal text-white px-3 py-1.5 rounded text-sm hover:bg-teal-light transition-colors">
-                             Approve
-                           </button>
-                         </form>
-                       )}
-                       {apt.status === 'confirmed' && (
-                         <form action={async () => {
-                           'use server'
-                           await updateAppointmentStatus(apt.id, 'completed')
-                         }}>
-                           <button className="bg-charcoal text-white px-3 py-1.5 rounded text-sm hover:bg-black transition-colors">
-                             Complete
-                           </button>
-                         </form>
-                       )}
-                       <form action={async () => {
-                         'use server'
-                         await updateAppointmentStatus(apt.id, 'cancelled')
-                       }}>
-                         <button className="text-red-500 hover:bg-red-50 px-3 py-1.5 rounded text-sm font-medium transition-colors">
-                           Cancel
-                         </button>
-                       </form>
+                    <td className="py-4 px-4">
+                      <p className="text-charcoal font-bold text-sm tracking-tight">{format(new Date(apt.created_at), 'MMM dd')}</p>
+                      <p className="text-[10px] text-gray-400 font-mono italic">{format(new Date(apt.created_at), 'HH:mm')}</p>
+                    </td>
+                    <td className="py-4 px-4">
+                       <div className="flex justify-end gap-2">
+                        {apt.status === 'pending' && (
+                          <form action={async () => {
+                            'use server'
+                            await updateAppointmentStatus(apt.id, 'confirmed')
+                          }}>
+                            <button className="bg-teal hover:bg-teal-light text-white px-3 py-1.5 rounded-xl text-[10px] font-bold shadow-sm transition-all hover:scale-105">
+                              Approve
+                            </button>
+                          </form>
+                        )}
+                        {apt.status === 'confirmed' && (
+                          <form action={async () => {
+                            'use server'
+                            await updateAppointmentStatus(apt.id, 'completed')
+                          }}>
+                            <button className="bg-charcoal hover:bg-black text-white px-3 py-1.5 rounded-xl text-[10px] font-bold shadow-sm transition-all hover:scale-105">
+                              Finish
+                            </button>
+                          </form>
+                        )}
+                        <form action={async () => {
+                          'use server'
+                          await updateAppointmentStatus(apt.id, 'cancelled')
+                        }}>
+                          <button className="text-red-500 hover:text-red-700 px-3 py-1.5 rounded-xl text-[10px] font-bold transition-all hover:bg-red-50">
+                            Cancel
+                          </button>
+                        </form>
+                       </div>
                     </td>
                   </tr>
                 ))}

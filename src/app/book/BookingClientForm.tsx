@@ -130,7 +130,7 @@ export default function BookingClientForm({ services, bookedSlots }: { services:
                   </div>
                 </div>
                 <div className="font-medium text-lg">
-                  ${service.price}
+                  ₹{service.price}
                 </div>
               </label>
             ))}
