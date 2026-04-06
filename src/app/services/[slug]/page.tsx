@@ -1,35 +1,27 @@
-import { createClient } from '@/lib/supabase/server'
+import { getCachedServiceBySlug, getCachedGalleryByService, getCachedServices } from '@/lib/data'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Clock, DollarSign, CheckCircle2 } from 'lucide-react'
+import { ArrowLeft, Clock, IndianRupee, CheckCircle2 } from 'lucide-react'
 
-// Next.js 15 requires params to be awaited before usage in Server Components
+// Generate static params for all active services at build time
+export async function generateStaticParams() {
+  const services = await getCachedServices()
+  return services.map((service: any) => ({ slug: service.slug }))
+}
+
 export default async function ServiceDetailsPage({
   params
 }: {
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const supabase = await createClient()
-
-  // Fetch the primary service data
-  const { data: service } = await supabase
-    .from('services')
-    .select('*')
-    .eq('slug', slug)
-    .single()
+  const service = await getCachedServiceBySlug(slug)
 
   if (!service) {
     notFound()
   }
 
-  // Fetch related gallery photos for the specific service
-  const { data: galleryPhotos } = await supabase
-    .from('gallery_photos')
-    .select('*')
-    .eq('service_id', service.id)
-    .eq('is_published', true)
-    .limit(2)
+  const galleryPhotos = await getCachedGalleryByService(service.id)
 
   return (
     <div className="pt-32 pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -55,7 +47,7 @@ export default async function ServiceDetailsPage({
                  <Clock size={16} className="text-teal" /> {service.duration_minutes} Minutes
                </div>
                <div className="bg-white/90 backdrop-blur text-charcoal px-4 py-2 rounded-full font-bold flex items-center gap-2 shadow-lg">
-                 <DollarSign size={16} className="text-teal" /> From ${service.price}
+                 <IndianRupee size={16} className="text-teal" /> From ₹{service.price}
                </div>
              </div>
           </div>
@@ -65,7 +57,7 @@ export default async function ServiceDetailsPage({
             <div className="bg-cream rounded-3xl p-8 border border-charcoal/5">
               <h3 className="font-serif text-2xl text-charcoal mb-6 border-b border-charcoal/10 pb-4">Real Patient Results</h3>
               <div className="space-y-8">
-                {galleryPhotos.map((photo) => (
+                {galleryPhotos.map((photo: any) => (
                   <div key={photo.id}>
                     <p className="font-medium text-charcoal mb-3">{photo.title}</p>
                     <div className="flex gap-2 h-32 md:h-48">

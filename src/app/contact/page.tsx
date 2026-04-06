@@ -107,6 +107,12 @@ export default function ContactPage({
           )}
 
           <form action={submitContactForm} className="space-y-6">
+            {/* Anti-spam: honeypot field — invisible to users, bots fill it */}
+            <div className="absolute -left-[9999px]" aria-hidden="true">
+              <input type="text" name="website" tabIndex={-1} autoComplete="off" />
+            </div>
+            {/* Anti-spam: timestamp to detect speed bots */}
+            <input type="hidden" name="_timestamp" value={Date.now().toString()} />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-charcoal mb-2">Full Name *</label>

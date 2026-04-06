@@ -1,23 +1,9 @@
-import { createClient } from '@/lib/supabase/server'
+import { getCachedGalleryPhotos, getCachedTestimonials } from '@/lib/data'
 import { CheckCircle2, Star } from 'lucide-react'
 
-// Using Tailwind 4 + Glassmorphism aesthetic
 export default async function GalleryPage() {
-  const supabase = await createClient()
-  
-  // Fetch real gallery photos from database
-  const { data: galleryPhotos } = await supabase
-    .from('gallery_photos')
-    .select('*, service:services!service_id(name)')
-    .eq('is_published', true)
-    .order('created_at', { ascending: false })
-
-  const { data: testimonials } = await supabase
-    .from('testimonials')
-    .select('*')
-    .eq('is_published', true)
-    .order('rating', { ascending: false })
-    .limit(6)
+  const galleryPhotos = await getCachedGalleryPhotos()
+  const testimonials = await getCachedTestimonials()
 
   return (
     <div className="pt-32 pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -72,11 +58,11 @@ export default async function GalleryPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {testimonials?.map(review => (
+          {testimonials?.map((review: any) => (
             <div key={review.id} className="glass p-8 rounded-3xl relative">
               <div className="text-4xl font-serif text-rose-gold opacity-20 absolute top-6 right-6">"</div>
               <div className="flex text-rose-gold mb-6">
-                {[...Array(review.rating)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}
+                {[...Array(review.rating)].map((_: any, i: number) => <Star key={i} size={16} fill="currentColor" />)}
               </div>
               <p className="text-gray-700 mb-8 italic leading-relaxed">"{review.content}"</p>
               <div className="mt-auto border-t border-charcoal/10 pt-4">

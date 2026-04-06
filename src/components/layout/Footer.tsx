@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { MapPin, Phone, Mail, Camera, MessageCircle, Send } from 'lucide-react'
+import { MapPin, Phone, Mail } from 'lucide-react'
 
 export default function Footer() {
   return (
@@ -16,17 +16,7 @@ export default function Footer() {
             <p className="text-gray-300 mb-6 leading-relaxed">
               Premium dermatology and skincare aesthetic treatments tailored to enhance your natural beauty and restore your skin's health.
             </p>
-            <div className="flex space-x-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-rose-gold transition-colors">
-                <Camera size={20} />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-rose-gold transition-colors">
-                <MessageCircle size={20} />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-rose-gold transition-colors">
-                <Send size={20} />
-              </a>
-            </div>
+
           </div>
 
           {/* Quick Links */}

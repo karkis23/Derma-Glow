@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { getCachedServices } from '@/lib/data'
 import Link from 'next/link'
 import { Clock, Tag, ArrowRight } from 'lucide-react'
 
@@ -15,18 +15,7 @@ interface Service {
 }
 
 export default async function ServicesPage() {
-  const supabase = await createClient()
-  
-  // Fetch active services
-  const { data: services, error } = await supabase
-    .from('services')
-    .select('*')
-    .eq('is_active', true)
-    .order('name')
-
-  if (error) {
-    console.error('Error fetching services:', error)
-  }
+  const services = await getCachedServices()
 
   // Group by category
   const categories = Array.from(new Set(services?.map(s => s.category) || []))
@@ -76,7 +65,7 @@ export default async function ServicesPage() {
                       
                       <div className="flex items-center justify-between mt-auto pt-4 border-t border-charcoal/10">
                         <span className="font-bold text-lg text-charcoal">
-                          From ${service.price}
+                          From ₹{service.price}
                         </span>
                         <Link 
                           href={`/services/${service.slug}`}
