@@ -3,8 +3,6 @@ import { redirect } from 'next/navigation'
 import { Users, ShieldAlert, KeyRound, Plus } from 'lucide-react'
 import { createStaffMember } from './actions'
 
-export const dynamic = 'force-dynamic'
-
 export default async function StaffManagementPage({
   searchParams
 }: {

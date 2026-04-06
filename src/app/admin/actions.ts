@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 
 async function checkRole(allowedRoles: string[]) {
   const supabase = await createClient()
@@ -29,6 +29,7 @@ export async function updateAppointmentStatus(appointmentId: string, status: 'co
 
   if (error) return { error: 'Failed to update status' }
   revalidatePath('/admin')
+  revalidateTag('appointments')
 }
 
 export async function createPresignedUploadUrl(fileName: string, contentType: string) {

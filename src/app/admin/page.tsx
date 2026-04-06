@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic'
-
 import { createClient } from '@/lib/supabase/server'
 import { format } from 'date-fns'
 import { updateAppointmentStatus } from './actions'
@@ -7,8 +5,7 @@ import { updateAppointmentStatus } from './actions'
 export default async function AdminDashboardPage() {
   const supabase = await createClient()
 
-  // Fetch pending and confirmed appointments
-  const { data: appointments, error } = await supabase
+  const { data: appointments } = await supabase
     .from('appointments')
     .select(`
       *,
@@ -17,11 +14,6 @@ export default async function AdminDashboardPage() {
     `)
     .in('status', ['pending', 'confirmed'])
     .order('appointment_date', { ascending: true })
-
-  if (error) {
-    console.error("Fetch Error:", error.message, error.hint, error.details)
-    throw new Error(error.message)
-  }
 
   const pendingCount = appointments?.filter(a => a.status === 'pending').length || 0
 

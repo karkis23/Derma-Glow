@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 
 export async function upsertService(formData: FormData) {
   const supabase = await createClient()
@@ -56,8 +56,8 @@ export async function upsertService(formData: FormData) {
     return { error: error.message }
   }
 
-  revalidatePath('/admin/assets')
-  revalidatePath('/services')
+  revalidatePath('/admin/assets', 'page')
+  revalidateTag('services')
   return { success: true }
 }
 
@@ -72,8 +72,8 @@ export async function toggleServiceStatus(id: string, currentStatus: boolean) {
     return { error: error.message }
   }
 
-  revalidatePath('/admin/assets')
-  revalidatePath('/services')
+  revalidatePath('/admin/assets', 'page')
+  revalidateTag('services')
   return { success: true }
 }
 
@@ -118,8 +118,8 @@ export async function upsertGalleryPhoto(formData: FormData) {
     return { error: error.message }
   }
 
-  revalidatePath('/admin/assets')
-  revalidatePath('/gallery')
+  revalidatePath('/admin/assets', 'page')
+  revalidateTag('gallery')
   return { success: true }
 }
 
@@ -134,8 +134,8 @@ export async function deleteGalleryPhoto(id: string) {
     return { error: error.message }
   }
 
-  revalidatePath('/admin/assets')
-  revalidatePath('/gallery')
+  revalidatePath('/admin/assets', 'page')
+  revalidateTag('gallery')
   return { success: true }
 }
 
