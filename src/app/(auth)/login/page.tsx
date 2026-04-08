@@ -1,11 +1,13 @@
 import Link from 'next/link'
 import { login } from '../actions'
 
-export default function LoginPage({
+export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: { message: string }
+  searchParams: Promise<{ message?: string; success?: string }>
 }) {
+  const params = await searchParams
+
   return (
     <div className="min-h-screen flex items-center justify-center pt-20 pb-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-cream">
       {/* Background blobs */}
@@ -71,9 +73,9 @@ export default function LoginPage({
             </div>
 
             <div className="text-sm">
-              <a href="#" className="font-medium text-rose-gold hover:text-rose-gold-light transition-colors">
+              <Link href="/forgot-password" className="font-medium text-rose-gold hover:text-rose-gold-light transition-colors">
                 Forgot your password?
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -85,10 +87,16 @@ export default function LoginPage({
               Sign in
             </button>
           </div>
+
+          {params?.success && (
+            <div className="p-4 rounded-xl bg-teal/10 border border-teal/30">
+              <p className="text-sm text-center text-teal font-medium">{params.success}</p>
+            </div>
+          )}
           
-          {searchParams?.message && (
+          {params?.message && (
             <div className="p-4 rounded-xl bg-red-50/80 border border-red-200">
-              <p className="text-sm text-center text-red-600 font-medium">{searchParams.message}</p>
+              <p className="text-sm text-center text-red-600 font-medium">{params.message}</p>
             </div>
           )}
         </form>
@@ -96,3 +104,4 @@ export default function LoginPage({
     </div>
   )
 }
+
