@@ -40,6 +40,11 @@ export async function register(formData: FormData) {
   const { error } = await supabase.auth.signUp(data)
 
   if (error) {
+    const msg = error.message.toLowerCase()
+    // Supabase rate-limits repeat signup/email requests — show the check-email screen.
+    if (msg.includes('security purposes') || msg.includes('rate limit')) {
+      redirect(`/register?success=${encodeURIComponent('A verification email was already sent. Please check your inbox (and spam folder) to verify your account.')}`)
+    }
     redirect(`/register?message=${encodeURIComponent(error.message)}`)
   }
 
