@@ -1,9 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition, useRef } from 'react'
 import { createAppointment } from './actions'
 import { Calendar as CalendarIcon, Clock, ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react'
-// import { format, addDays } from 'date-fns' // We will mock dates for simplicity if date-fns has issues
 
 interface Service {
   id: string
@@ -49,6 +48,8 @@ export default function BookingClientForm({ services, bookedSlots }: { services:
   const [selectedTime, setSelectedTime] = useState<string>('')
   const [visitType, setVisitType] = useState<'in_person' | 'teleconsultation'>('in_person')
   const [errorMsg, setErrorMsg] = useState('')
+  const [isPending, startTransition] = useTransition()
+  const formRef = useRef<HTMLFormElement>(null)
 
   const availableDates = generateDates()
   const availableSlots = generateTimeSlots()
@@ -68,11 +69,28 @@ export default function BookingClientForm({ services, bookedSlots }: { services:
 
   const handleBack = () => setStep(step - 1)
 
-  return (
-    <form action={async (formData) => {
+  const handleSubmit = (e?: React.FormEvent) => {
+    e?.preventDefault()
+    if (!formRef.current) return
+    
+    // Explicitly grab form data and run server action ONLY when explicitly called
+    const formData = new FormData(formRef.current)
+    startTransition(async () => {
       const res = await createAppointment(formData)
       if (res?.error) setErrorMsg(res.error)
-    }} className="space-y-6 text-charcoal">
+    })
+  }
+
+  return (
+    <form 
+      ref={formRef} 
+      className="space-y-6 text-charcoal"
+      onSubmit={(e) => {
+         // Block all automatic form submissions! e.g., hitting ENTER in an input field.
+         // We will only manually submit when the user forcefully clicks the "Confirm" button.
+         e.preventDefault()
+      }}
+    >
       
       {/* STEPS INDICATOR */}
       <div className="flex items-center justify-center mb-8">
@@ -115,7 +133,7 @@ export default function BookingClientForm({ services, bookedSlots }: { services:
                   <div className="mt-1">
                     <input 
                       type="radio" 
-                      name="service_id" 
+                      name="validate_service_id" 
                       value={service.id}
                       checked={selectedService === service.id}
                       onChange={() => setSelectedService(service.id)}
@@ -142,7 +160,6 @@ export default function BookingClientForm({ services, bookedSlots }: { services:
       {step === 2 && (
         <div className="animate-in fade-in slide-in-from-right-4 duration-300">
            <h2 className="text-2xl font-serif text-charcoal mb-6">Select a Date & Time</h2>
-           <input type="hidden" name="service_id" value={selectedService} />
            
            <div className="mb-8">
              <label className="block text-sm font-medium mb-3">Available Dates</label>
@@ -166,7 +183,6 @@ export default function BookingClientForm({ services, bookedSlots }: { services:
                   )
                 })}
              </div>
-             <input type="hidden" name="date" value={selectedDate} />
            </div>
 
            {selectedDate && (
@@ -194,7 +210,6 @@ export default function BookingClientForm({ services, bookedSlots }: { services:
                    )
                  })}
                </div>
-               <input type="hidden" name="time" value={selectedTime} />
              </div>
            )}
         </div>
@@ -204,21 +219,18 @@ export default function BookingClientForm({ services, bookedSlots }: { services:
       {step === 3 && (
         <div className="animate-in fade-in slide-in-from-right-4 duration-300">
            <h2 className="text-2xl font-serif text-charcoal mb-6">Final Details</h2>
-           <input type="hidden" name="service_id" value={selectedService} />
-           <input type="hidden" name="date" value={selectedDate} />
-           <input type="hidden" name="time" value={selectedTime} />
 
            <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium mb-3">Visit Type</label>
                 <div className="grid grid-cols-2 gap-4">
                   <label className={`flex flex-col items-center p-4 border-2 rounded-2xl cursor-pointer transition-colors ${visitType === 'in_person' ? 'border-teal bg-teal/5' : 'border-white/50 bg-white/30 hover:border-teal/30'}`}>
-                    <input type="radio" name="type" value="in_person" checked={visitType === 'in_person'} onChange={() => setVisitType('in_person')} className="sr-only" />
+                    <input type="radio" value="in_person" checked={visitType === 'in_person'} onChange={() => setVisitType('in_person')} className="sr-only" />
                     <span className="font-semibold">In-Clinic</span>
                     <span className="text-xs text-gray-500 mt-1 text-center">New York Office</span>
                   </label>
                   <label className={`flex flex-col items-center p-4 border-2 rounded-2xl cursor-pointer transition-colors ${visitType === 'teleconsultation' ? 'border-teal bg-teal/5' : 'border-white/50 bg-white/30 hover:border-teal/30'}`}>
-                    <input type="radio" name="type" value="teleconsultation" checked={visitType === 'teleconsultation'} onChange={() => setVisitType('teleconsultation')} className="sr-only" />
+                    <input type="radio" value="teleconsultation" checked={visitType === 'teleconsultation'} onChange={() => setVisitType('teleconsultation')} className="sr-only" />
                     <span className="font-semibold">Telehealth</span>
                     <span className="text-xs text-gray-500 mt-1 text-center">Video Call</span>
                   </label>
@@ -251,6 +263,12 @@ export default function BookingClientForm({ services, bookedSlots }: { services:
            </div>
         </div>
       )}
+      
+      {/* Hidden inputs to guarantee data passes correctly during manual JS submit */}
+      <input type="hidden" name="service_id" value={selectedService} />
+      <input type="hidden" name="date" value={selectedDate} />
+      <input type="hidden" name="time" value={selectedTime} />
+      <input type="hidden" name="type" value={visitType} />
 
       {/* NAVIGATION BUTTONS */}
       <div className="flex justify-between mt-10 pt-6 border-t border-charcoal/10">
@@ -258,7 +276,8 @@ export default function BookingClientForm({ services, bookedSlots }: { services:
           <button
             type="button"
             onClick={handleBack}
-            className="px-6 py-3 rounded-xl font-medium text-charcoal hover:bg-white/50 transition-colors flex items-center gap-2"
+            disabled={isPending}
+            className="px-6 py-3 rounded-xl font-medium text-charcoal hover:bg-white/50 transition-colors flex items-center gap-2 disabled:opacity-50"
           >
             <ArrowLeft size={18} /> Back
           </button>
@@ -274,10 +293,12 @@ export default function BookingClientForm({ services, bookedSlots }: { services:
           </button>
         ) : (
           <button
-            type="submit"
-            className="bg-charcoal hover:bg-black text-white px-8 py-3 rounded-xl font-medium transition-colors shadow-md hover:shadow-lg flex items-center gap-2"
+            type="button"
+            onClick={() => handleSubmit()}
+            disabled={isPending}
+            className="bg-charcoal hover:bg-black text-white px-8 py-3 rounded-xl font-medium transition-colors shadow-md hover:shadow-lg flex items-center gap-2 disabled:opacity-70"
           >
-            Confirm Reservation <CheckCircle2 size={18} />
+            {isPending ? 'Booking...' : 'Confirm Reservation'} <CheckCircle2 size={18} />
           </button>
         )}
       </div>
