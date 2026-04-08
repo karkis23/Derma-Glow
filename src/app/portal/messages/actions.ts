@@ -7,10 +7,10 @@ export async function sendMessage(formData: FormData) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   
-  if (!user) return { error: 'Not authenticated' }
+  if (!user) return
 
   const content = formData.get('content') as string
-  if (!content || content.trim() === '') return { error: 'Message cannot be empty' }
+  if (!content || content.trim() === '') return
 
   // Send to the default clinic admin/reception (For now, we'll assign it to a placeholder UUID or null if allowed)
   // Usually, you'd look up the admin or assigned doctor.
@@ -31,7 +31,7 @@ export async function sendMessage(formData: FormData) {
 
   if (error) {
     console.error('Error sending message:', error)
-    return { error: 'Failed to send message' }
+    return
   }
 
   revalidatePath('/portal/messages')
