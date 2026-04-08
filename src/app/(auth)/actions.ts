@@ -26,8 +26,9 @@ export async function login(formData: FormData) {
 export async function register(formData: FormData) {
   const supabase = await createClient()
 
+  const email = formData.get('email') as string
   const data = {
-    email: formData.get('email') as string,
+    email,
     password: formData.get('password') as string,
     options: {
       data: {
@@ -39,11 +40,10 @@ export async function register(formData: FormData) {
   const { error } = await supabase.auth.signUp(data)
 
   if (error) {
-    redirect(`/register?message=${error.message}`)
+    redirect(`/register?message=${encodeURIComponent(error.message)}`)
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/portal')
+  redirect(`/register?success=${encodeURIComponent('Account created! Please check your email to verify your account before signing in.')}`)
 }
 
 export async function logout() {
