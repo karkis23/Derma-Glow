@@ -27,11 +27,34 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
+  // Handle auth callback codes that land on ANY page (e.g. when Supabase
+  // falls back to the Site URL instead of the redirect URL)
+  const { pathname, searchParams } = request.nextUrl
+  const code = searchParams.get('code')
+
+  if (code && pathname !== '/auth/callback') {
+    // A Supabase auth code landed on a non-callback page — redirect to the callback handler
+    const url = request.nextUrl.clone()
+    url.pathname = '/auth/callback'
+    // Preserve the code and next params
+    return NextResponse.redirect(url)
+  }
+
+  // Handle auth errors that land on the root URL (expired/invalid links)
+  const authError = searchParams.get('error_description') || searchParams.get('error')
+  if (authError && (pathname === '/' || pathname === '')) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/forgot-password'
+    url.search = '' // Clear all params
+    url.searchParams.set('message', authError.includes('expired')
+      ? 'Your reset link has expired. Please request a new one.'
+      : 'Something went wrong. Please try again.')
+    return NextResponse.redirect(url)
+  }
+
   const {
     data: { user },
   } = await supabase.auth.getUser()
-
-  const pathname = request.nextUrl.pathname
 
   if (
     !user &&
