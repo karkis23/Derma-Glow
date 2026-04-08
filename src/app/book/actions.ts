@@ -2,7 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { revalidatePath, revalidateTag } from 'next/cache'
+import { revalidatePath } from 'next/cache'
 
 export async function createAppointment(formData: FormData) {
   const supabase = await createClient()
@@ -39,6 +39,5 @@ export async function createAppointment(formData: FormData) {
   }
 
   revalidatePath('/portal')
-  revalidateTag('appointments')
   redirect('/portal?message=Appointment booked successfully')
 }

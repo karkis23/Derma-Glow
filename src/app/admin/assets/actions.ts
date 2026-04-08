@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { revalidatePath, revalidateTag } from 'next/cache'
+import { revalidatePath } from 'next/cache'
 
 export async function upsertService(formData: FormData) {
   const supabase = await createClient()
@@ -57,7 +57,6 @@ export async function upsertService(formData: FormData) {
   }
 
   revalidatePath('/admin/assets', 'page')
-  revalidateTag('services')
   return { success: true }
 }
 
@@ -73,7 +72,6 @@ export async function toggleServiceStatus(id: string, currentStatus: boolean) {
   }
 
   revalidatePath('/admin/assets', 'page')
-  revalidateTag('services')
   return { success: true }
 }
 
@@ -119,7 +117,6 @@ export async function upsertGalleryPhoto(formData: FormData) {
   }
 
   revalidatePath('/admin/assets', 'page')
-  revalidateTag('gallery')
   return { success: true }
 }
 
@@ -135,7 +132,6 @@ export async function deleteGalleryPhoto(id: string) {
   }
 
   revalidatePath('/admin/assets', 'page')
-  revalidateTag('gallery')
   return { success: true }
 }
 
